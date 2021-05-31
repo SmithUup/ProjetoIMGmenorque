@@ -1,7 +1,6 @@
 # :camera_flash: ​IMG < 
 
 Versão 1.0
-:heart:Sisteminha IMG < 
 
 *Utilizamos **php** em back e **bootstrap** em front.*
 

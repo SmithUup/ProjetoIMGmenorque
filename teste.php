@@ -1,13 +1,9 @@
-<?php
-include_once('menu.html');
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-
+    <link rel="stylesheet" href="bootstrap.min.css">
 
        <!-- Imagens do Success, Danger, Infor e etc -->
        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -103,7 +99,7 @@ $tipofoto = substr($img['name'], -4);
 
 
 <body>
-<br /><br />
+
 
     <div class=" bg-dark p-5 text-center text-white">
         <h1 class="display-10">Reduza o peso da sua imagem, mantendo as dimensões.</h1>
@@ -112,7 +108,6 @@ $tipofoto = substr($img['name'], -4);
 
 
 <div class="container">
-    
 <form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
 
     <div>
@@ -146,4 +141,9 @@ $imgnova = filesize('img/'.$arquivo) / 1000;
 <?php endif; ?>
 </div>
 </body>
+
+<script type="text/javascript" src="jquery3.6.0.min.js"></script>
+    <script type="text/javascript" src="popper.min.js"></script>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <script type="text/javascript" src="filmesscript.js"></script>
 </html>

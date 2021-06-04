@@ -1,5 +1,5 @@
 <?php
-include_once('menu.html');
+include 'menu.html';
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +22,7 @@ include_once('menu.html');
         </symbol>
       </svg>
 
-    <title>IMG <</title>
+    <title>IMG < Redução</title>
 
     <script>
     // Evita de reenviar o formulário
@@ -113,14 +113,14 @@ $tipofoto = substr($img['name'], -4);
 
 <div class="container">
     
-<form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+<form method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
 
     <div>
     <input class="form-control form-control-lg" id="formFileLg" type="file" name="img" accept="image/*" required>
     </div>
     
     <div class="input-group mb-3">
-     <input type="number" class="form-control" placeholder="Qualidade de 1-99 %" aria-label="Recipient's username" aria-describedby="basic-addon2" name="qualidade" required>
+     <input type="number" class="form-control" placeholder="Qualidade de 1-99 %" aria-label="Recipient's username" aria-describedby="basic-addon2" name="qualidade" min="1" max="99" required>
     <span class="input-group-text" id="basic-addon2">%</span>
     </div>
     
@@ -143,6 +143,7 @@ $imgnova = filesize('img/'.$arquivo) / 1000;
     </div>
 
 <img src="img/<?php echo $arquivo ?>" class="img-fluid">
+<br /><br /><br /><br />
 <?php endif; ?>
 </div>
 </body>

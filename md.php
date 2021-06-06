@@ -54,24 +54,18 @@ include 'menu.html';
     <p class="fw-bold" style="margin-bottom:-2px"> Marca D'água (.png):</p>   
     <input class="form-control form-control-lg" id="formFileLg" type="file" name="img_md" accept="image/*" required>
     </div>
+    <br />
 
-    <div class="dropdown">
-        <a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-        Inserir logo no:
-        </a>
-      
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <li class="dropdown-item">Superior Esquerdo</li>
-          <li class="dropdown-item" >Superior Meio</li>
-          <li class="dropdown-item" >Superior Direito</li>
-          <li class="dropdown-divider"></li>
-          <li class="dropdown-item">Centro da Imagem</li>
-          <li class="dropdown-divider"></li>
-          <li class="dropdown-item" value="esquerdo" >Inferior Esquerdo</li>
-          <li class="dropdown-item" >Inferior Meio</li>
-          <li class="dropdown-item" >Inferior Direito</li>
-        </ul>
-      </div>
+    <p class="fw-bold" style="margin-bottom:-2px"> Posição da Marca D'água:</p>
+      <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="posicao">
+      <option selected value="1">Centro da Imagem</option>
+      <option value="2">Superior Esquerdo</option>
+      <option value="3">Superior Meio</option>
+      <option value="4">Superior Direito</option>
+      <option value="5">Inferior Esquerdo</option>
+      <option value="6">Inferior Meio</option>
+      <option value="7">Inferior Direito</option>
+      </select>
 
     
    
@@ -91,42 +85,17 @@ if(isset($_FILES['imgback']))
 $imgback = $_FILES['imgback']['tmp_name'];
 $img_md = $_FILES['img_md']['tmp_name'];
 $tipofotoback = substr($_FILES['imgback']['name'], -4);
+$tipofotoimg_md = substr($_FILES['img_md']['name'], -4);
+$posicao = $_POST['posicao'];
 
-        if($tipofotoback == "jpeg" or $tipofotoback == ".jpg")
+
+
+        if($tipofotoback == "jpeg" or $tipofotoback == ".jpg" && $tipofotoimg_md == ".png")
         {
         //Capturando a largura e altura da imagem background.
         list($lg_ori, $alt_ori) = getimagesize($imgback);
         //Capturando a largura e altura da imagem marca D'agua.
         list($lg_md, $alt_md) = getimagesize($img_md);
-
-        // //topo esquedo
-        // $lg_ori_meio = 0;
-        // $alt_ori_meio = 0;
-
-        // //topo meio
-        // $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
-        // $alt_ori_meio = 0;
-
-        // //topo direito
-        // $lg_ori_meio = $lg_ori - $lg_md;
-        // $alt_ori_meio = 0;
-       
-        //meio
-        $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
-        $alt_ori_meio = ($alt_ori / 2) - ($alt_md / 2);
-
-        // //btt esquerdo
-        // $lg_ori_meio = 0;
-        // $alt_ori_meio = $alt_ori - $alt_md;
-
-        // //btt esquerdo
-        // $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
-        // $alt_ori_meio = $alt_ori - $alt_md;
-        
-        // //btt direito
-        // $lg_ori_meio = $lg_ori - $lg_md;
-        // $alt_ori_meio = $alt_ori - $alt_md;
-        
     
         //Criando uma img com o mesmo tamanho da imagem original.
         $img_final = imagecreatetruecolor($lg_ori, $alt_ori);
@@ -141,22 +110,61 @@ $tipofotoback = substr($_FILES['imgback']['name'], -4);
         //Estamos copiando a Imagem Original(BACK) para essa tela em branco.
         imagecopy($img_final, $img_orginal, 0, 0, 0, 0, $lg_ori, $alt_ori);
 
+                if($posicao == 1)
+                {
+                  $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
+                  $alt_ori_meio = ($alt_ori / 2) - ($alt_md / 2);
+                }
+                elseif ($posicao == 2)
+                {
+                  $lg_ori_meio = 0;
+                  $alt_ori_meio = 0;
+                }
+                elseif ($posicao == 3)
+                {
+                  $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
+                  $alt_ori_meio = 0;
+                }
+                elseif ($posicao == 4)
+                {
+                  $lg_ori_meio = $lg_ori - $lg_md;
+                  $alt_ori_meio = 0;
+                }
+                elseif ($posicao == 5)
+                {
+                  $lg_ori_meio = 0;
+                  $alt_ori_meio = $alt_ori - $alt_md;
+                }
+                elseif ($posicao == 6)
+                {
+                  $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
+                  $alt_ori_meio = $alt_ori - $alt_md;
+                }
+                elseif ($posicao == 7)
+                {
+                  $lg_ori_meio = $lg_ori - $lg_md;
+                  $alt_ori_meio = $alt_ori - $alt_md;
+                }
+
         //Agora estamos copiando a marca dágua em cima da Imagem Final.
         imagecopy($img_final, $marcadagua, $lg_ori_meio, $alt_ori_meio, 0, 0, $lg_md, $alt_md);
 
         //Criando a imagem em PNG e salvando no diretório.
-        imagepng($img_final, "img/teste.png");
+        $arquivo = md5(time().rand(0,99999)).'.png';
+        imagepng($img_final, "img/".$arquivo);
 
-        echo "IMG criada com sucesso.";
+        echo "<br /> <div class='alert alert-success'>
+            <svg class='bi flex-shrink-0 me-2' width='24' height='24' role='img' aria-label='Success:'><use xlink:href='#check-circle-fill'/></svg>
+            IMG criada com sucesso!.
+            </div>
+            <img src='img/".$arquivo."' class='img-fluid'> <br /> <br />";
+
         }
-        elseif($tipofotoback == ".png")
+
+        elseif($tipofotoback == ".png" && $tipofotoimg_md == ".png")
         {
         //Capturando a largura e altura da imagem background.
         list($lg_ori, $alt_ori) = getimagesize($imgback);
-
-        //meio
-        $lg_ori_meio = $lg_ori / 2;
-        $alt_ori_meio = $lg_ori / 2;
 
         //Capturando a largura e altura da imagem marca D'agua.
         list($lg_md, $alt_md) = getimagesize($img_md);
@@ -174,18 +182,62 @@ $tipofotoback = substr($_FILES['imgback']['name'], -4);
         //Estamos copiando a Imagem Original(BACK) para essa tela em branco.
         imagecopy($img_final, $img_orginal, 0, 0, 0, 0, $lg_ori, $alt_ori);
 
+                if($posicao == 1)
+                {
+                  $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
+                  $alt_ori_meio = ($alt_ori / 2) - ($alt_md / 2);
+                }
+                elseif ($posicao == 2)
+                {
+                  $lg_ori_meio = 0;
+                  $alt_ori_meio = 0;
+                }
+                elseif ($posicao == 3)
+                {
+                  $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
+                  $alt_ori_meio = 0;
+                }
+                elseif ($posicao == 4)
+                {
+                  $lg_ori_meio = $lg_ori - $lg_md;
+                  $alt_ori_meio = 0;
+                }
+                elseif ($posicao == 5)
+                {
+                  $lg_ori_meio = 0;
+                  $alt_ori_meio = $alt_ori - $alt_md;
+                }
+                elseif ($posicao == 6)
+                {
+                  $lg_ori_meio = ($lg_ori / 2) - ($lg_md / 2);
+                  $alt_ori_meio = $alt_ori - $alt_md;
+                }
+                elseif ($posicao == 7)
+                {
+                  $lg_ori_meio = $lg_ori - $lg_md;
+                  $alt_ori_meio = $alt_ori - $alt_md;
+                }
+
         //Agora estamos copiando a marca dágua em cima da Imagem Final.
         imagecopy($img_final, $marcadagua, $lg_ori_meio, $alt_ori_meio, 0, 0, $lg_md, $alt_md);
-
+        
         //Criando a imagem em PNG e salvando no diretório.
-        imagepng($img_final, "img/teste.png");
+        $arquivo = md5(time().rand(0,99999)).'.png';
+        imagepng($img_final, "img/".$arquivo);
 
-        echo "IMG criada com sucesso.";
+        echo "<br /> <div class='alert alert-success'>
+            <svg class='bi flex-shrink-0 me-2' width='24' height='24' role='img' aria-label='Success:'><use xlink:href='#check-circle-fill'/></svg>
+            IMG criada com sucesso!.
+            </div>
+            <img src='img/".$arquivo."' class='img-fluid'> <br /> <br />";
 
         }
         else
         {
-            echo "Erro na imamgem. Aceitamos apenas .JPG . JPEG e PNG no fundo e na Marca D'agua apenas .PNG";
+            echo "<br /> <div class='alert alert-danger'>
+            <svg class='bi flex-shrink-0 me-2' width='24' height='24' role='img' aria-label='danger:'><use xlink:href='#check-circle-fill'/></svg>
+            Erro na IMG. Aceitamos apenas .JPG . JPEG e PNG e na Marca D'agua apenas .PNG.
+            </div>";
         }
 
 }
